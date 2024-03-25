@@ -1,0 +1,37 @@
+; Define registers used
+.equ LIST_START, 0x1000  ; Replace with your actual list address
+
+positive_count  DCD 0          ; Stores count of positive numbers
+negative_count  DCD 0          ; Stores count of negative numbers
+
+; Function to separate positive and negative numbers
+separate_numbers:
+    LDR R0, =LIST_START    ; Load list address into R0
+    LDR R1, =positive_count ; Load positive count address into R1
+    LDR R2, =negative_count ; Load negative count address into R2
+    MOV R3, #0              ; Initialize loop counter (index) to 0
+    MOV R4, #0              ; Initialize positive count to 0
+    MOV R5, #0              ; Initialize negative count to 0
+
+loop:
+    LDR R6, [R0]            ; Load element from list to R6 (single element access)
+    CMP R6, #0              ; Compare with zero
+    BLT negative           ; Branch if less than zero (negative)
+    BGT positive           ; Branch if greater than zero (positive)
+    ; Element is zero, do nothing
+
+positive:
+    ADD R4, #1              ; Increment positive count
+    B loop                  ; Continue looping
+
+negative:
+    ADD R5, #1              ; Increment negative count
+    B loop                  ; Continue looping
+
+done:
+    STR R4, [R1]            ; Store positive count
+    STR R5, [R2]            ; Store negative count
+    BX LR                   ; Return from function
+
+; End of program
+END
